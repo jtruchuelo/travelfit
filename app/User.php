@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'lastname', 'username', 'email', 'password',
     ];
 
     /**
@@ -33,7 +33,14 @@ class User extends Authenticatable
      *
      * @var array
      */
+    // protected $casts = [
+    //     'email_verified_at' => 'datetime',
+    // ];
     protected $casts = [
-        'email_verified_at' => 'datetime',
+
     ];
+
+    public function itineraries(){
+        return $this->hasMany('App\Itinerary', 'user_id');
+    }
 }
