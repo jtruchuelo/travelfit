@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+
+    /*
+    public function __construct() {
+        $this->middleware('auth.basic', ['only' => ['store', 'update']])
+    }
+    */
     /**
      * Display a listing of the resource.
      *
@@ -28,10 +34,11 @@ class UserController extends Controller
     {
         // Recibir datos
         $json = $request->input('json', null);
-        $params = json_decode($json); // Objeto
+        // $params = json_decode($json); // Objeto
         $params_array = json_decode($json, true); // Array
 
-        if (!empty($params) && !empty($params_array)){
+        // if (!empty($params) && !empty($params_array)){
+        if (!empty($params_array)){
 
             // Limpiar datos array
             $params_array = array_map('trim', $params_array);
@@ -58,7 +65,11 @@ class UserController extends Controller
 
                 // Cifrar password
                 // $pwd = password_hash($params->password, PASSWORD_BCRYPT, ['cost' => 4]);
-                $pwd = Hash::make($params->password, [
+                // $pwd = Hash::make($params->password, [
+                //     'rounds' => 4
+                // ]);
+
+                $pwd = Hash::make($params_array['password'], [
                     'rounds' => 4
                 ]);
 
