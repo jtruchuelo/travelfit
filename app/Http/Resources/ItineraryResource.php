@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\DestinationResource;
 
 class ItineraryResource extends JsonResource
 {
@@ -16,13 +17,14 @@ class ItineraryResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'itinerary_id' => $this->id,
             'name' => $this->name,
             'createdDate' => (string) $this->createdDate,
             'startDate' => (string) $this->startDate,
             'endDate' => (string) $this->endDate,
             'public' => $this->public,
-            'userId' => $this->user_id,
+            'user_id' => $this->user_id,
+            'destinations' => DestinationResource::collection($this->destinations),
         ];
     }
 }

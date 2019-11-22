@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,18 +15,45 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::apiResource('destinations','DestinationController');
-Route::apiResource('itineraries','ItineraryController');
-Route::apiResource('pois','PoiController', ['parameters' => [
-    'pois' => 'poi',
-]]);
-Route::apiResource('users','UserController');
+// Login
+Route::post('/login','AuthController@login');
+// Register
+Route::post('/register','AuthController@register');
+
+Route::middleware('APIToken')->group(function () {
+    // Logout
+    Route::post('/logout','AuthController@logout');
+    // Acceso Destinos
+    Route::apiResource('destinations','DestinationController');
+    // Acceso Itinerarios
+    Route::apiResource('itineraries','ItineraryController');
+    // Acceso POIS
+    Route::apiResource('pois','PoiController', ['parameters' => [
+        'pois' => 'poi',
+    ]]);
+    Route::apiResource('users', 'UserController');
+
+    // Prueba
+    Route::get('/user', function (Request $request) {
+        return response()->json([
+            'message' => 'HOLA!!!HOLA',
+          ]);
+    });
+});
+
+/*
+
+// Route::apiResource('users','UserController');
 
 // Route::apiResource('users','UserController', ['only' => ['index', 'show']]);
 // Route::apiResource('users','UserController', ['except' => ['index', 'show']]);
+
+
+// Route::post('/register', 'UserController@store');
+// Route::post('/login', 'UserController@login');
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 //     return $request->user();
 // });
 
-//Route::apiResource('prueba','PruebasController');
+*/

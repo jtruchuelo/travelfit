@@ -15,7 +15,7 @@ class ItineraryController extends Controller
      */
     public function index()
     {
-        //return ItineraryResource::collection(Itinerary::all()->keyBy->id);
+        // return ItineraryResource::collection(Itinerary::all()->keyBy->id);
         return ItineraryResource::collection(Itinerary::all());
     }
 
@@ -36,9 +36,11 @@ class ItineraryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Itinerary $itinerary)
+    public function show(Request $request)
     {
-        //
+        $id = $request->user_id;
+        return ItineraryResource::collection(Itinerary::where('user_id', $id)->get());
+        // return new ItineraryResource($itinerary);
     }
 
     /**

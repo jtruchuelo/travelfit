@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\PoiResource;
 
 class DestinationResource extends JsonResource
 {
@@ -16,12 +17,13 @@ class DestinationResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'destination_id' => $this->id,
             'name' => $this->name,
             'idApi' => $this->idApi,
             'startDate' => (string) $this->startDate,
             'endDate' => (string) $this->endDate,
-            'itineraryId' => $this->itinerary_id,
+            // 'itinerary_id' => $this->itinerary_id,
+            'pois' => PoiResource::collection($this->pois),
         ];
     }
 }
