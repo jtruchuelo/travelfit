@@ -43,4 +43,5 @@ class User extends Authenticatable
     public function itineraries(){
         return $this->hasMany('App\Itinerary', 'user_id');
     }
+
 }

@@ -27,11 +27,12 @@ Route::middleware('APIToken')->group(function () {
     Route::apiResource('destinations','DestinationController');
     // Acceso Itinerarios
     Route::apiResource('itineraries','ItineraryController');
+    //Route::apiResource('itineraries.destinations','ItineraryController');
     // Acceso POIS
     Route::apiResource('pois','PoiController', ['parameters' => [
         'pois' => 'poi',
     ]]);
-    Route::apiResource('users', 'UserController');
+    Route::apiResource('users', 'UserController', ['only' => ['update']]);
 
     // Prueba
     Route::get('/user', function (Request $request) {

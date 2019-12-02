@@ -23,4 +23,13 @@ class Itinerary extends Model
     public function user(){
         return $this->belongsTo('App\User', 'id');
     }
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($itinerary) {
+            $itinerary->pois()->delete();
+            $itinerary->destinations()->delete();
+        });
+    }
 }

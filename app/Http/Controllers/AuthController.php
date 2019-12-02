@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\User;
 use Validator;
+use Auth;
 
 class AuthController extends Controller
 {
@@ -16,8 +16,8 @@ class AuthController extends Controller
 
     public function __construct()
     {
-      // Unique Token
-      $this->apiToken = uniqid(base64_encode(Str::random(60)));
+        // Unique Token
+        $this->apiToken = uniqid(base64_encode(Str::random(60)));
     }
 
     /**
@@ -27,49 +27,45 @@ class AuthController extends Controller
      */
     public function login (Request $request) // Acceso por POST
     {
-      // Validations
-      $rules = [
-        'email'=>'required|email',
-        'password'=>'required|string|min:6',
-      ];
+        // Validations
+        $rules = [
+            'email'=>'required|email|string',
+            'password'=>'required|string|min:6',
+        ];
 
-      $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
 
-      if ($validator->fails()) {
-        // Validation failed
-        return response()->json([
-          'message' => $validator->messages(),
-        ], 401);
-      } else {
-        // Fetch User
-        $user = User::where('email',$request->email)->first();
-        if($user) {
-          // Verify the password
-          if( password_verify($request->password, $user->password) ) {
-            // Update Token
-            $postArray = ['api_token' => $this->apiToken];
-            $login = User::where('email',$request->email)->update($postArray);
-
-            if($login) {
-              return response()->json([
-                'status' => 'Authorization Successful!',
-                'id_user' => $user->id,
-                'UserToken' => $this->apiToken,
-              ], 202);
-            }
-          } else {
-            return response()->json([
+        if ($validator->fails()) {
+            // Validation failed
+            $respuesta = Array (
+                'code' => 401,
                 'status' => 'error',
-                'message' => 'Unauthorized, check your credentials.',
-            ], 401);
-          }
+                'message' => $validator->messages(),
+            );
+
         } else {
-          return response()->json([
-            'status' => 'error',
-            'message' => 'User not found',
-          ], 401);
+            if(Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+                // Update Token
+                $postArray = ['api_token' => $this->apiToken];
+                $user = Auth::user();
+                if ($user->update($postArray)) {
+                    $respuesta = Array (
+                        'code' => 202,
+                        'status' => 'success',
+                        'id_user' => $user->id,
+                        'UserToken' => $this->apiToken,
+                    );
+                }
+            } else {
+                $respuesta = Array (
+                    'code' => 401,
+                    'status' => 'error',
+                    'message' => 'Unauthorized, check your credentials',
+                );
+            }
         }
-      }
+
+        return response()->json($respuesta, $respuesta['code']);
     }
 
 
@@ -80,46 +76,53 @@ class AuthController extends Controller
      */
     public function register (Request $request) // Acceso por POST
     {
-      // Validations
-      $rules = [
-        'name' => 'required|alpha|string|max:25',
-        'lastname' => 'required|alpha|string|max:50',
-        'username' => 'required|alpha_dash|string|max:20|unique:users',
-        'email' => 'required|email|string|max:50|unique:users',
-        'password' => 'required|min:6',
-      ];
-      $validator = Validator::make($request->all(), $rules);
+        // Validations
+        $rules = [
+            'name' => 'required|alpha|string|max:25',
+            'lastname' => 'required|alpha|string|max:50',
+            'username' => 'required|alpha_dash|string|max:20|unique:users',
+            'email' => 'required|email|string|max:50|unique:users',
+            'password' => 'required|alpha_dash|min:6',
+        ];
 
-      if ($validator->fails()) {
-        // Validation failed
-        return response()->json([
-          'message' => $validator->messages(),
-        ], 401);
-      } else {
+        $validator = Validator::make($request->all(), $rules);
 
-        $user = User::create([
-            'name' => $request->name,
-            'lastname' => $request->lastname,
-            'username' => $request->username,
-            'email' => $request->email,
-            'password' => Hash::make($request->password, ['rounds' => 4]),
-            'api_token' => Str::random(60),
-        ]);
-
-        if($user) {
-          return response()->json([
-            'status' => 'success',
-            'name' => $request->name,
-            'email' => $request->email,
-            'access_token' => $this->apiToken,
-          ], 201 );
+        if ($validator->fails()) {
+            // Validation failed
+            $respuesta = Array (
+                'code' => 401,
+                'status' => 'error',
+                'message' => $validator->messages(),
+            );
         } else {
-          return response()->json([
-            'status' => 'error',
-            'message' => 'Registration failed, please try again.',
-          ], 401);
+
+            $user = User::create([
+                'name' => $request->name,
+                'lastname' => $request->lastname,
+                'username' => $request->username,
+                'email' => $request->email,
+                'password' => Hash::make($request->password, ['rounds' => 4]),
+                'api_token' => Str::random(60),
+            ]);
+
+            if($user) {
+                $respuesta = Array (
+                    'code' => 201,
+                    'status' => 'success',
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'access_token' => $this->apiToken,
+                );
+            } else {
+                $respuesta = Array (
+                    'code' => 401,
+                    'status' => 'error',
+                    'message' => 'Registration failed, please try again.',
+                );
+            }
         }
-      }
+
+        return response()->json($respuesta, $respuesta['code']);
     }
 
 
@@ -130,23 +133,27 @@ class AuthController extends Controller
      */
     public function logout (Request $request)
     {
-      $token = $request->header('Authorization');
-      $user = User::where('api_token',$token)->first();
-      if($user) {
-        $postArray = ['api_token' => null];
-        $logout = User::where('id',$user->id)->update($postArray);
-        if($logout) {
-          return response()->json([
-            'status' => 'success',
-            'message' => 'User Logged Out',
-          ], 200);
+        $token = $request->header('Authorization');
+        $user = User::where('api_token',$token)->first();
+        if($user) {
+            $postArray = ['api_token' => null];
+            $logout = User::where('id',$user->id)->update($postArray);
+            if($logout) {
+                $respuesta = Array (
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'User Logged Out',
+                );
+            }
+        } else {
+            $respuesta = Array (
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'User not found',
+            );
         }
-      } else {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'User not found',
-        ], 401);
-      }
+
+        return response()->json($respuesta, $respuesta['code']);
     }
 }
 

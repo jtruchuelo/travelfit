@@ -20,4 +20,12 @@ class Destination extends Model
     public function itinerary(){
         return $this->belongsTo('App\Itinerary', 'id');
     }
+
+    public static function boot() {
+        parent::boot();
+
+        static::deleting(function($destination) {
+             $destination->pois()->delete();
+        });
+    }
 }
