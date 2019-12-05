@@ -34,13 +34,10 @@ Route::middleware('APIToken')->group(function () {
     ]]);
     Route::apiResource('users', 'UserController', ['only' => ['update']]);
 
-    // Prueba
-    Route::get('/user', function (Request $request) {
-        return response()->json([
-            'message' => 'HOLA!!!HOLA',
-          ]);
-    });
 });
+
+// Prueba
+Route::post('/prueba', 'ApiFoursquareController@getVenues');
 
 /*
 
