@@ -1,8 +1,11 @@
 <?php
 
-use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+/* use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
+use App\User;
+ */
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +35,7 @@ Route::middleware('APIToken')->group(function () {
     Route::apiResource('pois','PoiController', ['parameters' => [
         'pois' => 'poi',
     ]]);
-    Route::apiResource('users', 'UserController', ['only' => ['update']]);
+    Route::apiResource('users', 'UserController', ['only' => ['update', 'show']]);
 
 });
 

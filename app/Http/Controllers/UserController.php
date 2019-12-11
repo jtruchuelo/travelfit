@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Http\Resources\UserResource;
 use Validator;
 
 class UserController extends Controller
@@ -43,10 +44,24 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    // public function show(User $user)
-    // {
-    //     //
-    // }
+    public function show(Request $request, User $user)
+    {
+        if ($request->user_id !== $user->id) {
+            $respuesta = Array (
+                'code' => 403,
+                'status' => 'error',
+                'message' => 'You can only view your user.'
+            );
+        } else {
+            $respuesta = Array (
+                'code' => 200,
+                'status' => 'success',
+                'user' => new UserResource($user)
+            );
+        }
+
+        return response()->json($respuesta, $respuesta['code']);
+    }
 
     /**
      * Update the specified resource in storage.
@@ -62,7 +77,7 @@ class UserController extends Controller
             'lastname' => 'required|string|max:50',
             'username' => 'required|string|max:20|unique:users',
             'email' => 'required|email|string|max:50|unique:users',
-            'password' => 'required|alpha_dash|min:6'
+            'password' => 'required|alpha_dash|min:6' // Mirar esto para que no lo actualice si no esta, puesto que una vez cifrado.. no se envia
         ];
 
         $validator = Validator::make($request->all(), $rules);

@@ -19,7 +19,7 @@ class CreateItinerariesTable extends Migration
             $table->dateTime('createdDate');
             $table->dateTime('startDate');
             $table->dateTime('endDate');
-            $table->boolean('public');
+            $table->boolean('isPublic');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\UserResource;
 use App\User;
 use Validator;
 use Auth;
@@ -52,8 +53,9 @@ class AuthController extends Controller
                     $respuesta = Array (
                         'code' => 202,
                         'status' => 'success',
-                        'id_user' => $user->id,
-                        'UserToken' => $this->apiToken,
+                        // 'id_user' => $user->id,
+                        'userToken' => $this->apiToken,
+                        'user' => new UserResource($user),
                     );
                 }
             } else {
@@ -76,6 +78,10 @@ class AuthController extends Controller
      */
     public function register (Request $request) // Acceso por POST
     {
+
+        // $json = json_decode($request->json, true);
+        // var_dump($request);die();
+
         // Validations
         $rules = [
             'name' => 'required|alpha|string|max:25',
@@ -90,7 +96,7 @@ class AuthController extends Controller
         if ($validator->fails()) {
             // Validation failed
             $respuesta = Array (
-                'code' => 401,
+                'code' => 400 ,
                 'status' => 'error',
                 'message' => $validator->messages(),
             );
@@ -102,7 +108,7 @@ class AuthController extends Controller
                 'username' => $request->username,
                 'email' => $request->email,
                 'password' => Hash::make($request->password, ['rounds' => 4]),
-                'api_token' => Str::random(60),
+                'api_token' => $this->apiToken,
             ]);
 
             if($user) {
@@ -111,11 +117,11 @@ class AuthController extends Controller
                     'status' => 'success',
                     'name' => $request->name,
                     'email' => $request->email,
-                    'access_token' => $this->apiToken,
+                    'userToken' => $this->apiToken,
                 );
             } else {
                 $respuesta = Array (
-                    'code' => 401,
+                    'code' => 400 ,
                     'status' => 'error',
                     'message' => 'Registration failed, please try again.',
                 );
@@ -147,7 +153,7 @@ class AuthController extends Controller
             }
         } else {
             $respuesta = Array (
-                'code' => 401,
+                'code' => 400 ,
                 'status' => 'error',
                 'message' => 'User not found',
             );

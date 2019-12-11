@@ -18,7 +18,7 @@ class ItineraryController extends Controller
      */
     public function index()
     {
-        return ItineraryPublicResource::collection(Itinerary::all())->sortBy('startDate')->where('public', true);
+        return ItineraryPublicResource::collection(Itinerary::all())->sortBy('startDate')->where('isPublic', true);
     }
 
     /**
@@ -35,7 +35,7 @@ class ItineraryController extends Controller
             // 'createdDate' => 'required|date',
             'startDate' => 'required|date',
             'endDate' => 'required|date',
-            'public' => 'required|boolean',
+            'isPublic' => 'required|boolean',
             'user_id' => 'required|integer|exists:users,id'
         ];
 
@@ -53,7 +53,7 @@ class ItineraryController extends Controller
                 'createdDate' => Carbon::now(),
                 'startDate' => $request->startDate,
                 'endDate' => $request->endDate,
-                'public' => $request->public,
+                'isPublic' => $request->isPublic,
                 'user_id' => $request->user_id,
             ]);
 
@@ -112,14 +112,14 @@ class ItineraryController extends Controller
                 'createdDate' => 'required|date',
                 'startDate' => 'required|date',
                 'endDate' => 'required|date',
-                'public' => 'required|boolean',
+                'isPublic' => 'required|boolean',
                 'user_id' => 'required|integer|exists:users,id',
             ];
 
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator) {
-                $itinerary->update($request->only(['name', 'startDate', 'endDate', 'public']));
+                $itinerary->update($request->only(['name', 'startDate', 'endDate', 'isPublic']));
                 $respuesta = Array (
                     'code' => 200,
                     'status' => 'success',

@@ -15,14 +15,15 @@ class ItineraryPublicResource extends JsonResource
      */
     public function toArray($request)
     {
+        $username = User::select('name')->where(['id' => $this->user_id])->pluck('name');
         return [
             'itinerary_id' => $this->id,
             'name' => $this->name,
             //'createdDate' => (string) $this->createdDate,
             'startDate' => (string) $this->startDate,
             'endDate' => (string) $this->endDate,
-            //'public' => $this->public,
-            'user_name' => User::find($this->user_id)->value('username')
+            'user_id' => $this->user_id,
+            'user_name' => $username[0],
         ];
     }
 }
