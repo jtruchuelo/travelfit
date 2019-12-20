@@ -9,7 +9,7 @@ class Itinerary extends Model
     protected $table = 'itineraries';
 
     protected $fillable = [
-        'name', 'createdDate','startDate', 'endDate', 'public', 'user_id',
+        'name', 'createdDate','startDate', 'endDate', 'isPublic', 'user_id',
     ];
 
     public function destinations(){

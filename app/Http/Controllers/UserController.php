@@ -77,14 +77,18 @@ class UserController extends Controller
             'lastname' => 'required|string|max:50',
             'username' => 'required|string|max:20|unique:users',
             'email' => 'required|email|string|max:50|unique:users',
-            'password' => 'required|alpha_dash|min:6' // Mirar esto para que no lo actualice si no esta, puesto que una vez cifrado.. no se envia
+            'password' => 'alpha_dash|min:6'
         ];
 
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator) {
-            $request['password'] = Hash::make($request->password, ['rounds' => 4]);
-            $user->update($request->only(['name', 'lastname', 'username', 'email', 'password']));
+            if ($request->password != '') {
+                $request['password'] = Hash::make($request->password, ['rounds' => 4]);
+                $user->update($request->only(['name', 'lastname', 'username', 'email', 'password']));
+            } else {
+                $user->update($request->only(['name', 'lastname', 'username', 'email']));
+            }
             $respuesta = Array (
                 'code' => 200,
                 'status' => 'success',

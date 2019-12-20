@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ItineraryResource;
-use App\Http\Resources\ItineraryPublicResource;
+use App\Http\Resources\ItineraryResourceCollection;
 use App\Itinerary;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -18,7 +18,9 @@ class ItineraryController extends Controller
      */
     public function index()
     {
-        return ItineraryPublicResource::collection(Itinerary::all())->sortBy('startDate')->where('isPublic', true);
+        return new ItineraryResourceCollection(Itinerary::where('isPublic', true)->paginate());
+        // return new ItineraryResourceCollection(Itinerary::paginate()->where('isPublic', true));
+        // return new ItineraryResourceCollection(Itinerary::all()->where('isPublic', true));
     }
 
     /**

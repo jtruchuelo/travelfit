@@ -2,22 +2,29 @@
 
 namespace App\Http\Resources;
 
-use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\DestinationResource;
+// use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use App\User;
 
-class ItineraryResource extends JsonResource
+class ItineraryResourceCollection extends ResourceCollection
 {
-    //public $preserveKeys = true;
     /**
      * Transform the resource into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
+
+    // public $collects = 'App\Http\Resources\ItineraryResource';
+
     public function toArray($request)
     {
-        $username = User::select('name')->where(['id' => $this->user_id])->pluck('name');
+        return [
+            'status' => 'success',
+            'itineraries' => $this->collection
+        ];
+
+        /* $username = User::select('name')->where(['id' => $this->user_id])->pluck('name');
         return [
             'itinerary_id' => $this->id,
             'name' => $this->name,
@@ -27,7 +34,6 @@ class ItineraryResource extends JsonResource
             'isPublic' => $this->isPublic,
             'user_id' => $this->user_id,
             'user_name' => $username[0],
-            'destinations' => DestinationResource::collection($this->destinations),
-        ];
+        ]; */
     }
 }

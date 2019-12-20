@@ -22,14 +22,20 @@ use App\User;
 Route::post('/login','AuthController@login');
 // Register
 Route::post('/register','AuthController@register');
+// Contacto
+Route::post('/contact','ContactController@contact');
+// Itinerarios públicos
+Route::get('itineraries','ItineraryController@index');
+Route::get('itineraries/{itinerary}','ItineraryController@show');
 
+// Rutas protegidas
 Route::middleware('APIToken')->group(function () {
     // Logout
     Route::post('/logout','AuthController@logout');
     // Acceso Destinos
     Route::apiResource('destinations','DestinationController');
     // Acceso Itinerarios
-    Route::apiResource('itineraries','ItineraryController');
+    Route::apiResource('itineraries','ItineraryController', ['only' => ['store', 'update', 'destroy']]);
     //Route::apiResource('itineraries.destinations','ItineraryController');
     // Acceso POIS
     Route::apiResource('pois','PoiController', ['parameters' => [
@@ -40,7 +46,7 @@ Route::middleware('APIToken')->group(function () {
 });
 
 // Prueba
-Route::post('/prueba', 'ApiFoursquareController@getVenues');
+Route::post('/venues', 'ApiFoursquareController@getVenues');
 
 /*
 
