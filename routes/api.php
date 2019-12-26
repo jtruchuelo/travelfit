@@ -29,7 +29,7 @@ Route::get('itineraries','ItineraryController@index');
 Route::get('itineraries/{itinerary}','ItineraryController@show');
 
 // Crear nuevo itinerario
-Route::post('newItinerary', 'NewItineraryController@create');
+// Route::post('newItinerary', 'NewItineraryController@create');
 
 // Rutas protegidas
 Route::middleware('APIToken')->group(function () {
@@ -48,8 +48,8 @@ Route::middleware('APIToken')->group(function () {
 
 });
 
-// FourSquare
-Route::post('/venues', 'ApiFoursquareController@getVenues');
+// Sygic
+// Route::post('/venues', 'ApiFoursquareController@getVenues');
 
 
 /*
