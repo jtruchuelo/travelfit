@@ -28,6 +28,9 @@ Route::post('/contact','ContactController@contact');
 Route::get('itineraries','ItineraryController@index');
 Route::get('itineraries/{itinerary}','ItineraryController@show');
 
+// Crear nuevo itinerario
+Route::post('newItinerary', 'NewItineraryController@create');
+
 // Rutas protegidas
 Route::middleware('APIToken')->group(function () {
     // Logout
@@ -45,8 +48,9 @@ Route::middleware('APIToken')->group(function () {
 
 });
 
-// Prueba
+// FourSquare
 Route::post('/venues', 'ApiFoursquareController@getVenues');
+
 
 /*
 
