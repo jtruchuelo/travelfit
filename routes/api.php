@@ -28,31 +28,33 @@ Route::post('/contact','ContactController@contact');
 Route::get('itineraries','ItineraryController@index');
 Route::get('itineraries/{itinerary}','ItineraryController@show');
 
-// Crear nuevo itinerario
-// Route::post('newItinerary', 'NewItineraryController@create');
+// Sygic
+// Prueba
+// Route::get('sygicPrueba/{destination}', 'SygicAPIController@show');
+// Nuevo itinerario
+Route::post('new_itinerary', 'SygicAPIController@new');
 
 // Rutas protegidas
 Route::middleware('APIToken')->group(function () {
     // Logout
     Route::post('/logout','AuthController@logout');
-    // Acceso Destinos
+    // Destinos
     Route::apiResource('destinations','DestinationController');
-    // Acceso Itinerarios
+    // Guardar itinerarios de usuario registrado
     Route::apiResource('itineraries','ItineraryController', ['only' => ['store', 'update', 'destroy']]);
-    //Route::apiResource('itineraries.destinations','ItineraryController');
-    // Acceso POIS
+    // POIS
     Route::apiResource('pois','PoiController', ['parameters' => [
         'pois' => 'poi',
-    ]]);
-    Route::apiResource('users', 'UserController', ['only' => ['update', 'show']]);
+        ]]);
+        // Actualizar y mostrar usuarios
+        Route::apiResource('users', 'UserController', ['only' => ['update', 'show']]);
 
-});
-
-// Sygic
-// Route::post('/venues', 'ApiFoursquareController@getVenues');
+    });
 
 
-/*
+/* EJEMPLOS UTILES
+
+//Route::apiResource('itineraries.destinations','ItineraryController');
 
 // Route::apiResource('users','UserController');
 

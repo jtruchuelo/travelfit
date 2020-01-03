@@ -18,11 +18,13 @@ class CreatePOIsTable extends Migration
             $table->string('name',60);
             $table->string('idApi',50);
             $table->dateTime('startDate');
-            $table->dateTime('endDate');
+            // $table->dateTime('endDate');
             $table->unsignedBigInteger('destination_id')->nullable($value = false);
+            $table->json('location');
             //$table->float('lat');
             //$table->float('lng');
-            //$table->json('poi');
+            $table->string('photo');
+            $table->integer('duration');
             $table->timestamps();
             $table->foreign('destination_id')->references('id')->on('destinations');
         });

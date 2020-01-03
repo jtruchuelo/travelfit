@@ -34,8 +34,11 @@ class PoiController extends Controller
             'name' => 'required|string|max:60',
             'idApi' => 'required|alpha_num|max:50',
             'startDate' => 'required|date',
-            'endDate' => 'required|date',
+            // 'endDate' => 'required|date',
             'destination_id' => 'required|integer|exists:destinations,id',
+            'location' => 'required',
+            'photo' => 'required',
+            'duration' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -52,8 +55,11 @@ class PoiController extends Controller
                 'name' => $request->name,
                 'idApi' => $request->idApi,
                 'startDate' => $request->startDate,
-                'endDate' => $request->endDate,
+                // 'endDate' => $request->endDate,
                 'destination_id' => $request->destination_id,
+                'location' => $request->location,
+                'photo' => $request->photo,
+                'duration' => $request->duration,
             ]);
 
             if($poi) {
@@ -103,14 +109,17 @@ class PoiController extends Controller
             'name' => 'required|string|max:60',
             'idApi' => 'required|alpha_num|max:50',
             'startDate' => 'required|date',
-            'endDate' => 'required|date',
+            // 'endDate' => 'required|date',
             'destination_id' => 'required|integer|exists:destinations,id',
+            'location' => 'required',
+            'photo' => 'required',
+            'duration' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator) {
-            $poi->update($request->only(['startDate', 'endDate']));
+            $poi->update($request->only(['startDate', 'duration']));
             $respuesta = Array (
                 'code' => 200,
                 'status' => 'success',

@@ -16,12 +16,15 @@ class PoiResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'poi_id' => $this->id,
+            'id' => $this->id,
             'name' => $this->name,
             'idApi' => $this->idApi,
             'startDate' => (string) $this->startDate,
-            'endDate' => (string) $this->endDate,
-            // 'destination_id' => $this->destination_id,
+            // 'endDate' => (string) $this->endDate,
+            'destination_id' => $this->destination_id,
+            'location' => $this->location,
+            'photo' => $this->photo,
+            'duration' => $this->duration,
         ];
     }
 }
