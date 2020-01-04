@@ -20,11 +20,11 @@ class PoiResource extends JsonResource
             'name' => $this->name,
             'idApi' => $this->idApi,
             'startDate' => (string) $this->startDate,
-            // 'endDate' => (string) $this->endDate,
             'destination_id' => $this->destination_id,
-            'location' => $this->location,
-            'photo' => $this->photo,
             'duration' => $this->duration,
+            'photo' => $this->photo,
+            'location' => $this->location,
+            'description' => $this->description,
         ];
     }
 }

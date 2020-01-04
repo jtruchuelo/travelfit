@@ -29,11 +29,14 @@ class DestinationController extends Controller
     {
         // Validations
         $rules = [
-            'name' => 'required|string|max:60',
-            'idApi' => 'required|alpha_num|max:50',
-            'startDate' => 'required|date',
-            'endDate' => 'required|date',
-            'itinerary_id' => 'required|integer|exists:itineraries,id',
+            'destinations' => 'required|array',
+            'destinations.name.*' => 'required|string|max:60',
+            'destinations.idApi.*' => 'required|max:50',
+            'destinations.startDate.*' => 'required|date',
+            'destinations.endDate.*' => 'required|date',
+            'destinations.itinerary_id.*' => 'required|integer|exists:itineraries,id',
+            'destinations.location.*' => 'required',
+            'destinations.pois.*' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -45,19 +48,32 @@ class DestinationController extends Controller
                 'message' => $validator->messages(),
             );
         } else {
-            $poi = Destination::create([
-                'name' => $request->name,
-                'idApi' => $request->idApi,
-                'startDate' => $request->startDate,
-                'endDate' => $request->endDate,
-                'itinerary_id' => $request->itinerary_id,
+            $destination = Destination::create([
+                'name' => $request->destinations['name'],
+                'idApi' => $request->destinations['idApi'],
+                'startDate' => $request->destinations['startDate'],
+                'endDate' => $request->destinations['endDate'],
+                'itinerary_id' => $request['new_itinerary_id'],
+                'location' => json_encode($request->destinations['location']),
+                'photo' => $request->destinations['photo'],
             ]);
 
-            if($poi) {
-                $respuesta = Array (
-                    'code' => 201,
-                    'status' => 'success',
-                );
+            if($destination) {
+                $data['new_destination_id'] = $destination->id;
+                $request->merge($data);
+                $respuestaPoi = app('App\Http\Controllers\PoiController')->store($request);
+                if ($respuestaPoi->original['status'] == 'success') {
+                    $respuesta = Array (
+                        'code' => 201,
+                        'status' => 'success',
+                    );
+                } else {
+                    $respuesta = Array (
+                        'code' => 401,
+                        'status' => 'failed',
+                        'message' => $respuestaPoi->original['message'],
+                    );
+                }
             } else {
                 $respuesta = Array (
                     'code' => 401,

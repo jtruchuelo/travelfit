@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ItineraryResource;
 use App\Http\Resources\ItineraryResourceCollection;
 use App\Itinerary;
+use App\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Validator;
@@ -23,6 +24,21 @@ class ItineraryController extends Controller
         // return new ItineraryResourceCollection(Itinerary::all()->where('isPublic', true));
     }
 
+    public function indexUser(Request $request, User $user)
+    {
+        if($request->user_id == $user->id) {
+            return new ItineraryResourceCollection(Itinerary::where('user_id', '=', $user->id)->paginate());
+        } else {
+            $respuesta = Array (
+                'code' => 403,
+                'status' => 'error',
+                'message' => 'Not authorized.',
+            );
+        }
+
+        return response()->json($respuesta, $respuesta['code']);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -33,12 +49,14 @@ class ItineraryController extends Controller
     {
         // Validations
         $rules = [
-            'name' => 'required|string|max:50',
-            // 'createdDate' => 'required|date',
+            'name' => 'required|string|max:60',
+            'createdDate' => 'required|date',
             'startDate' => 'required|date',
             'endDate' => 'required|date',
             'isPublic' => 'required|boolean',
-            'user_id' => 'required|integer|exists:users,id'
+            'user_id' => 'required|integer|exists:users,id',
+            'user_name' => 'required|string',
+            'destinations' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -60,10 +78,21 @@ class ItineraryController extends Controller
             ]);
 
             if($itinerary) {
-                $respuesta = Array (
-                    'code' => 201,
-                    'status' => 'success',
-                );
+                $data['new_itinerary_id'] = $itinerary->id;
+                $request->merge($data);
+                $respuestaDestino = app('App\Http\Controllers\DestinationController')->store($request);
+                if ($respuestaDestino->original['status'] == 'success') {
+                    $respuesta = Array (
+                        'code' => 201,
+                        'status' => 'success',
+                    );
+                } else {
+                    $respuesta = Array (
+                        'code' => 401,
+                        'status' => 'failed',
+                        'message' => $respuestaDestino->original['message'],
+                    );
+                }
             } else {
                 $respuesta = Array (
                     'code' => 401,
@@ -84,11 +113,38 @@ class ItineraryController extends Controller
      */
     public function show(Itinerary $itinerary)
     {
-        $respuesta = Array (
-            'code' => 200,
-            'status' => 'success',
-            'destination' => new ItineraryResource($itinerary)
-        );
+        if ($itinerary->isPublic){
+            $respuesta = Array (
+                'code' => 200,
+                'status' => 'success',
+                'itinerary' => new ItineraryResource($itinerary)
+            );
+        } else {
+            $respuesta = Array (
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'Itinerary not public'
+            );
+        }
+
+        return response()->json($respuesta, $respuesta['code']);
+    }
+
+    public function showUser(Request $request, User $user, Itinerary $itinerary)
+    {
+        if ($request->user_id == $itinerary->user_id && $itinerary->user_id == $user->id ){
+            $respuesta = Array (
+                'code' => 200,
+                'status' => 'success',
+                'itinerary' => new ItineraryResource($itinerary)
+            );
+        } else {
+            $respuesta = Array (
+                'code' => 401,
+                'status' => 'error',
+                'message' => 'Itinerary not public'
+            );
+        }
 
         return response()->json($respuesta, $respuesta['code']);
     }
@@ -110,10 +166,7 @@ class ItineraryController extends Controller
             );
         } else {
             $rules = [
-                'name' => 'required|string|max:50',
-                'createdDate' => 'required|date',
-                'startDate' => 'required|date',
-                'endDate' => 'required|date',
+                'name' => 'required|string|max:60',
                 'isPublic' => 'required|boolean',
                 'user_id' => 'required|integer|exists:users,id',
             ];
@@ -121,7 +174,7 @@ class ItineraryController extends Controller
             $validator = Validator::make($request->all(), $rules);
 
             if ($validator) {
-                $itinerary->update($request->only(['name', 'startDate', 'endDate', 'isPublic']));
+                $itinerary->update($request->only(['name', 'isPublic']));
                 $respuesta = Array (
                     'code' => 200,
                     'status' => 'success',

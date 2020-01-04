@@ -19,7 +19,7 @@ class ItineraryResource extends JsonResource
     {
         $username = User::select('name')->where(['id' => $this->user_id])->pluck('name');
         return [
-            'itinerary_id' => $this->id,
+            'id' => $this->id,
             'name' => $this->name,
             'createdDate' => (string) $this->createdDate,
             'startDate' => (string) $this->startDate,

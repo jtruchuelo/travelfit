@@ -29,8 +29,6 @@ Route::get('itineraries','ItineraryController@index');
 Route::get('itineraries/{itinerary}','ItineraryController@show');
 
 // Sygic
-// Prueba
-// Route::get('sygicPrueba/{destination}', 'SygicAPIController@show');
 // Nuevo itinerario
 Route::post('new_itinerary', 'SygicAPIController@new');
 
@@ -39,17 +37,19 @@ Route::middleware('APIToken')->group(function () {
     // Logout
     Route::post('/logout','AuthController@logout');
     // Destinos
-    Route::apiResource('destinations','DestinationController');
+    // Route::apiResource('destinations','DestinationController');
     // Guardar itinerarios de usuario registrado
     Route::apiResource('itineraries','ItineraryController', ['only' => ['store', 'update', 'destroy']]);
     // POIS
-    Route::apiResource('pois','PoiController', ['parameters' => [
+    /* Route::apiResource('pois','PoiController', ['parameters' => [
         'pois' => 'poi',
-        ]]);
-        // Actualizar y mostrar usuarios
-        Route::apiResource('users', 'UserController', ['only' => ['update', 'show']]);
-
-    });
+        ]]); */
+    // Actualizar y mostrar usuarios
+    Route::apiResource('users', 'UserController', ['only' => ['update', 'show']]);
+    // Itinerarios de un usuario
+    Route::post('itineraries/{user}','ItineraryController@indexUser');
+    Route::post('itineraries/{user}/{itinerary}','ItineraryController@showUser');
+});
 
 
 /* EJEMPLOS UTILES

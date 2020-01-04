@@ -15,7 +15,7 @@ class CreateItinerariesTable extends Migration
     {
         Schema::create('itineraries', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 50);
+            $table->string('name', 60);
             $table->dateTime('createdDate');
             $table->dateTime('startDate');
             $table->dateTime('endDate');

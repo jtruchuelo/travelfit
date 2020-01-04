@@ -20,9 +20,8 @@ class CreateDestinationsTable extends Migration
             $table->dateTime('startDate');
             $table->dateTime('endDate');
             $table->unsignedBigInteger('itinerary_id')->nullable($value = false);
-            //$table->float('lat');
-            //$table->float('lng');
-            //$table->json('destination');
+            $table->json('location');
+            $table->string('photo',255);
             $table->timestamps();
             $table->foreign('itinerary_id')->references('id')->on('itineraries');
         });

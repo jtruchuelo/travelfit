@@ -9,7 +9,7 @@ class Destination extends Model
     protected $table = 'destinations';
 
     protected $fillable = [
-        'name', 'idApi', 'startDate', 'endDate', 'itinerary_id',
+        'name', 'idApi', 'startDate', 'endDate', 'itinerary_id', 'location', 'photo'
     ];
 
 

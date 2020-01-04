@@ -15,16 +15,14 @@ class CreatePOIsTable extends Migration
     {
         Schema::create('pois', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name',60);
+            $table->string('name',80);
             $table->string('idApi',50);
             $table->dateTime('startDate');
-            // $table->dateTime('endDate');
             $table->unsignedBigInteger('destination_id')->nullable($value = false);
-            $table->json('location');
-            //$table->float('lat');
-            //$table->float('lng');
-            $table->string('photo');
             $table->integer('duration');
+            $table->string('photo',255);
+            $table->json('location');
+            $table->string('description',1500);
             $table->timestamps();
             $table->foreign('destination_id')->references('id')->on('destinations');
         });

@@ -9,8 +9,7 @@ class Poi extends Model
     protected $table = 'pois';
 
     protected $fillable = [
-        // 'name', 'idApi', 'startDate', 'endDate', 'destination_id',
-        'name', 'idApi', 'startDate', 'destination_id', 'duration', 'photo', 'location',
+        'name', 'idApi', 'startDate', 'destination_id', 'duration', 'photo', 'location', 'description'
     ];
 
     public function destination(){

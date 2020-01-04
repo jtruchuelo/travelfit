@@ -17,12 +17,14 @@ class DestinationResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'destination_id' => $this->id,
+            'id' => $this->id,
             'name' => $this->name,
             'idApi' => $this->idApi,
             'startDate' => (string) $this->startDate,
             'endDate' => (string) $this->endDate,
-            // 'itinerary_id' => $this->itinerary_id,
+            'itinerary_id' => $this->itinerary_id,
+            'location' => $this->location,
+            'photo' => $this->photo,
             'pois' => PoiResource::collection($this->pois),
         ];
     }

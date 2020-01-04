@@ -84,8 +84,8 @@ class AuthController extends Controller
 
         // Validations
         $rules = [
-            'name' => 'required|alpha|string|max:25',
-            'lastname' => 'required|alpha|string|max:50',
+            'name' => 'required|string|max:25',
+            'lastname' => 'required|string|max:50',
             'username' => 'required|alpha_dash|string|max:20|unique:users',
             'email' => 'required|email|string|max:50|unique:users',
             'password' => 'required|alpha_dash|min:6',

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PoiResource;
-use App\Itinerary;
 use App\Poi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Validator;
+use App\Itinerary;
+use Illuminate\Support\Facades\DB;
 
 class PoiController extends Controller
 {
@@ -29,19 +29,21 @@ class PoiController extends Controller
      */
     public function store(Request $request)
     {
+
+        $pois = $request->destinations['pois'];
         // Validations
         $rules = [
-            'name' => 'required|string|max:60',
-            'idApi' => 'required|alpha_num|max:50',
-            'startDate' => 'required|date',
-            // 'endDate' => 'required|date',
-            'destination_id' => 'required|integer|exists:destinations,id',
-            'location' => 'required',
-            'photo' => 'required',
-            'duration' => 'required',
+            '*.name' => 'required|string|max:80',
+            '*.idApi' => 'required|max:50',
+            '*.startDate' => 'required|date',
+            '*.destination_id' => 'required|integer',
+            '*.location' => 'required',
+            // '*.duration' => 'required',
+            // '*.photo' => 'required',
+            // '*.description' => 'required',
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($pois, $rules);
 
         if ($validator->fails()) {
             // Validation failed
@@ -51,28 +53,29 @@ class PoiController extends Controller
                 'message' => $validator->messages(),
             );
         } else {
-            $poi = Poi::create([
-                'name' => $request->name,
-                'idApi' => $request->idApi,
-                'startDate' => $request->startDate,
-                // 'endDate' => $request->endDate,
-                'destination_id' => $request->destination_id,
-                'location' => $request->location,
-                'photo' => $request->photo,
-                'duration' => $request->duration,
-            ]);
-
-            if($poi) {
-                $respuesta = Array (
-                    'code' => 201,
-                    'status' => 'success',
-                );
-            } else {
-                $respuesta = Array (
-                    'code' => 401,
-                    'status' => 'error',
-                    'message' => 'POI not created.',
-                );
+            foreach ($pois as $poi) {
+                $new_poi = Poi::create([
+                    'name' => $poi['name'],
+                    'idApi' => $poi['idApi'],
+                    'startDate' => $poi['startDate'],
+                    'destination_id' => $request['new_destination_id'],
+                    'location' => json_encode($poi['location']),
+                    'photo' => $poi['photo'],
+                    'duration' => $poi['duration'],
+                    'description' => $poi['description'],
+                ]);
+                if($new_poi) {
+                    $respuesta = Array (
+                        'code' => 201,
+                        'status' => 'success',
+                    );
+                } else {
+                    $respuesta = Array (
+                        'code' => 401,
+                        'status' => 'error',
+                        'message' => 'POI not created.',
+                    );
+                }
             }
         }
 
