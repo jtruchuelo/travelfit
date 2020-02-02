@@ -37,36 +37,14 @@ Route::middleware('APIToken')->group(function () {
     // Logout
     Route::post('/logout','AuthController@logout');
     // Destinos
-    // Route::apiResource('destinations','DestinationController');
+
     // Guardar itinerarios de usuario registrado
     Route::apiResource('itineraries','ItineraryController', ['only' => ['store', 'update', 'destroy']]);
     // POIS
-    /* Route::apiResource('pois','PoiController', ['parameters' => [
-        'pois' => 'poi',
-        ]]); */
+
     // Actualizar y mostrar usuarios
     Route::apiResource('users', 'UserController', ['only' => ['update', 'show']]);
     // Itinerarios de un usuario
     Route::post('itineraries/{user}','ItineraryController@indexUser');
     Route::post('itineraries/{user}/{itinerary}','ItineraryController@showUser');
 });
-
-
-/* EJEMPLOS UTILES
-
-//Route::apiResource('itineraries.destinations','ItineraryController');
-
-// Route::apiResource('users','UserController');
-
-// Route::apiResource('users','UserController', ['only' => ['index', 'show']]);
-// Route::apiResource('users','UserController', ['except' => ['index', 'show']]);
-
-
-// Route::post('/register', 'UserController@store');
-// Route::post('/login', 'UserController@login');
-
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
-
-*/

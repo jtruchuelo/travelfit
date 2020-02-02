@@ -147,15 +147,6 @@ class PoiController extends Controller
      */
     public function destroy(Request $request, Poi $poi)
     {
-        // ¿COMO HAGO PARA AUTENTICAR QUE SEA EL USUARIO DUEÑO?
-        /* SELECT `user_id` FROM `itineraries` WHERE `id` = (SELECT `itinerary_id` FROM `destinations` WHERE `id` = 5)
-        $id = $poi->destination_id;
-        $checks = Itinerary::select('user_id')
-                            ->where('id', '=', function ($id) {
-                                DB::table('destinations')->select('itinerary_id')
-                                    ->where('id', '=', $id)->get();
-                            })->get()->user_id;0
-        */
         if ($poi->delete()) {
             $respuesta = Array (
                 'code' => 200,

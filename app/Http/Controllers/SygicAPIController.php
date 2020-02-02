@@ -133,10 +133,3 @@ class SygicAPIController extends Controller
         return $pois;
     }
 }
-
-/*
-PARA AGREGAR HORAS. POSIBLE USO endDate POI
-$now = new DateTime(); //current date/time
-$now->add(new DateInterval("PT{$hours}H"));
-$new_time = $now->format('Y-m-d H:i:s');
- */

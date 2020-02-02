@@ -23,17 +23,5 @@ class ItineraryResourceCollection extends ResourceCollection
             'status' => 'success',
             'itineraries' => $this->collection
         ];
-
-        /* $username = User::select('name')->where(['id' => $this->user_id])->pluck('name');
-        return [
-            'itinerary_id' => $this->id,
-            'name' => $this->name,
-            'createdDate' => (string) $this->createdDate,
-            'startDate' => (string) $this->startDate,
-            'endDate' => (string) $this->endDate,
-            'isPublic' => $this->isPublic,
-            'user_id' => $this->user_id,
-            'user_name' => $username[0],
-        ]; */
     }
 }

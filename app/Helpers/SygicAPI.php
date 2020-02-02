@@ -70,7 +70,6 @@ class SygicAPI
                 $response = $this->client->request('GET', $url);
             }
 
-            // AQUI PUEDO ELIMINAR EL IF Y DEJAR SOLO EL CASO TRUE
             /* if ($params && $params['query']) {
                 $response = $this->client->request('GET', $url, $params);
                 /* $response = Cache::remember($url.$params['query'], new DateInterval("P2W"), function() use ($url, $params){
